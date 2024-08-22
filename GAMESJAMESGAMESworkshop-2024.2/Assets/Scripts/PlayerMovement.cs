@@ -12,7 +12,9 @@ public class PlayerMovement : MonoBehaviour
     public float speed;
     public float forceJump;
 
-    public bool isOnGround = true;
+    public bool isOnGround = false;
+    public bool isOnAir;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,16 +24,47 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Inputs();
+        JumpLogic();
+
+    }
+
+    private void FixedUpdate(){
+
+       MoveLogic(); 
+    }
+
+    public void Inputs(){
+        
         inputX = Input.GetAxisRaw("Horizontal");
         inputJump = Input.GetKeyDown(KeyCode.Space);
+
+    }
+
+    public void JumpLogic(){
 
         if(inputJump == true && isOnGround == true){
             rb.velocity = new Vector2(rb.velocity.x, forceJump);
         }
+
     }
 
-    private void FixedUpdate(){
-        
+    public void MoveLogic(){
+
         rb.velocity = new Vector2(inputX * speed, rb.velocity.y);
+
+    }
+    private void OnCollisionEnter2D(Collision2D collision){
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")){
+            isOnGround = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision){
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")){
+            isOnGround = false;
+        }
     }
 }
