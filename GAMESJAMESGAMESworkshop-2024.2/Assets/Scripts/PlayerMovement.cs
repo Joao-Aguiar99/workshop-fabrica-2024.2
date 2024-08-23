@@ -13,12 +13,17 @@ public class PlayerMovement : MonoBehaviour
     public float forceJump;
 
     public bool isOnGround = false;
-    public bool isOnAir;
+    public Animator anim;
+
+    SpriteRenderer spriteRenderer;
+    public bool flipX;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -26,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Inputs();
         JumpLogic();
+        Animations();
 
     }
 
@@ -67,4 +73,15 @@ public class PlayerMovement : MonoBehaviour
             isOnGround = false;
         }
     }
-}
+
+    public void Animations(){
+
+        anim.SetFloat("Horizontal", rb.velocity.x);
+
+        if (inputX > 0){
+            spriteRenderer.flipX = false;
+        }else if(inputX < 0){
+            spriteRenderer.flipX = true;
+        }
+    }
+}   
